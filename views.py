@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, flash
 from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 from flask_login import LoginManager, login_user, login_required, logout_user
+from datadisplay import Datatojson
 import func,time
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -10,49 +11,11 @@ login_manager.init_app(app)
 @app.route("/test",methods=['GET','POST'])
 def test():
     if request.method =='GET':
-        res = Product.fetchall()
-        colnames = Product.colnames()
-        chinese = []
-        for name in colnames:
-            aa = Colnamesmap(colname=name)
-            chinese.append(aa.search()[0][2])
-        cc = list(zip(colnames, chinese))
-        print(colnames)
-        print(chinese)
-        print(cc)
-
-        testdict = {
-            "name": 'ddd',
-            "colnames": cc,
-            "step": 5,
-            "data": res,
-        }
-        if len(res)%testdict["step"]==0:
-            testdict["pages"]=int(len(res)/testdict["step"])
-        else:
-            testdict["pages"] = int(len(res)/testdict["step"])+1
-        print(len(res))
+        testdict = Datatojson(Product(),step=2)
         return render_template('test.html',testdict=testdict)
     else:
-        res = Product.fetchall()
-        colnames=Product.colnames()
-        chinese=[]
-        for name in colnames:
-            aa=Colnamesmap(colname=name)
-            chinese.append(aa.search()[0][2])
-        cc=zip(colnames,chinese)
-        testdict = {
-            "name": 'ddd',
-            "colnames": cc,
-            "step": 5,
-            "data": res,
-        }
-        if len(res) % testdict["step"] == 0:
-            testdict["pages"] = int(len(res) / testdict["step"])
-        else:
-            testdict["pages"] = int(len(res) / testdict["step"]) + 1
-        print(request.form.to_dict())
-        return render_template('datapage.html', testdict=testdict)
+        testdict = Datatojson(Product)
+        return render_template('test.html', testdict=testdict)
 @app.route("/test01",methods=['GET','POST'])
 def test01():
     print(request.method)
