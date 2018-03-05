@@ -1,0 +1,129 @@
+
+{% macro fliter(id) -%}
+    <button id={{id}} class="btn btn-primary btn-sm floatleft">过滤</button><form id="fliter" class="floatleft">:</form>
+{%- endmacro %}
+{#  dict={
+        "name":'',
+        "colnames":[(),()],
+        "step":0,
+        "pages":0,
+        "data":[(),()]
+        }
+#}
+{% macro table(dict) -%}
+    <link rel="stylesheet" type="text/css" href="/static/css/mytable.css" />
+    <script src="/static/js/mytable.js"></script>
+    {# 分页 #}
+    <div id="tablearea">
+        <ul class="pagination pagination-sm floatright">
+            <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+            {% for num in range(1,dict.pages + 1) -%}
+                {% if loop.first -%}
+                    <li class="active"><a>{{num}}</a></li>
+                {% else -%}
+                    <li><a>{{num}}</a></li>
+                {%- endif %}
+            {%- endfor %}
+            <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+        </ul>
+    {# 数据表 #}
+    {% for row in dict.data -%}
+        {% if loop.index == 1 -%}
+        <table class="table table-condensed">
+        <tr>
+            <th><input type="checkbox"/></th>
+            {% for col in dict.colnames -%}
+                <th name="{{col[0]}}">{{col[1]}}</th>
+            {%- endfor %}
+        </tr>
+        {% elif loop.index%dict.step==1 and loop.index!=1 -%}
+            <table class="table table-condensed invisible">
+        <tr>
+            <th><input type="checkbox"/></th>
+            {% for col in dict.colnames -%}
+                <th name="{{col[0]}}">{{col[1]}}</th>
+            {%- endfor %}
+        </tr>
+        {%- endif %}
+        <tr>
+            <td>{{loop.index}}</td>
+            {% for td in row -%}
+                <td>{{td}}</td>
+            {%- endfor %}
+        </tr>
+        {% if ((loop.index + 1)%dict.step==1 and not loop.first) or loop.last -%}
+        </table>
+        {%- endif %}
+    {%- endfor %}
+    </div>
+{%- endmacro %}
+{# 弹出窗口背景 #}
+{% macro bgmain() -%}
+{%- endmacro %}
+{# form模板 #}
+{% macro col(key,notnull) -%}
+    <div class="col-lg-4 col-md-4 col-sm-4">
+        <div class="form-group">
+            <div><label for={{key}} class=" control-label">{{key}}</label></div>
+			{% if notnull=="YES" -%}
+				<input type="text" class="form-control" name="{{key}}" placeholder="在此输入">
+			{% elif notnull=="NO" %}
+				<input type="text" class="form-control bgyellow" name="{{key}}" placeholder="此项必填">
+			{%- endif %}
+        </div>
+    </div>
+{%- endmacro %}
+{# dict={
+        "name":'',
+        "url":'',
+        "desc":[(),()],
+        "data":[(),()]
+        }
+#}
+{% macro form(dict) %}
+    <link rel="stylesheet" type="text/css" href="/static/css/mytable.css" />
+    <script src="/static/js/mytable.js"></script>
+    {% if not dict.data %}{# 添加 #}
+        <form class="form-inline" action="{{dict.url}}" method="post">
+            <div class="row">
+            {% for tuple in dict.desc %}
+		        {% if not loop.first %}
+			        {% if tuple[0][:1]!='_' and tuple[3]!="PRI" %}
+				        {{col(tuple[0],tuple[2])}}
+			        {% endif %}
+		        {% endif %}
+            {% endfor  %}
+            </div>
+            <button type="submit" class="btn btn-primary">提交</button>
+        </form>
+    {% elif length(dict.data)==1 %}{# 修改  #}
+        <form class="form-inline" action="{{dict.url}}" method="post">
+            <div class="row">
+            {% for tuple in dict.desc %}
+		        {% if not loop.first %}
+			        {% if tuple[0][:1]!='_' and tuple[3]!="PRI" %}
+				        {{col(tuple[0],tuple[2])}}
+			        {% endif %}
+		        {% endif %}
+            {% endfor  %}
+            </div>
+            <button type="submit" class="btn btn-default">提交</button>
+        </form>
+    {% elif length(dict.data)>1 %}{# 批量修改 #}
+        <form class="form-inline" action="{{dict.url}}" method="post">
+            <div class="row">
+            {% for tuple in dict.desc %}
+		        {% if not loop.first %}
+			        {% if tuple[0][:1]!='_' and tuple[3]!="PRI" and tuple[3]!="UNI" %}
+				        {{col(tuple[0],tuple[2])}}
+			        {% endif %}
+		        {% endif %}
+            {% endfor  %}
+            </div>
+            <button type="submit" class="btn btn-default">提交</button>
+        </form>
+    {% else %}
+
+    {% endif %}
+
+{% endmacro %}

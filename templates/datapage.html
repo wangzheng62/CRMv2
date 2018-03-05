@@ -1,0 +1,6 @@
+
+{% import 'formmacro.html'as forms %}
+{% import 'listmacro.html'as lists %}
+    {% if testdict -%}
+        {{lists.table(testdict)}}
+	{%- endif %}
