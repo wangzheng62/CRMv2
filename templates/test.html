@@ -1,15 +1,27 @@
 
 {% extends 'index.html' %}
-{% import 'formmacro.html'as forms %}
-{% import 'listmacro.html'as lists %}
+{% import 'mymacros.html'as lists %}
 {% block title %}测试页{%endblock%}
+{% block top %}
+    <ul class="nav navbar-nav">
+    <li role="presentation" ><a href="/customermain" >客户管理</a></li>
+    <li role="presentation" ><a href="/ordermain" >订单管理</a></li>
+    <li role="presentation" ><a href="/productmain" >产品管理</a></li>
+    <li role="presentation" ><a href="/employeemain">人事管理</a></li>
+    </ul>
+{% endblock %}
 {% block left -%}
+    {% if listofleft -%}
+        {{lists.list(listofleft)}}
+	{%- endif %}
 {%- endblock %}
 {% block pagearea -%}
 {# 功能框 #}
-    {{lists.fliter("rr")}}
-    {% if testdict -%}
-        {{lists.table(testdict)}}
-        {{lists.form(testdict)}}
+    {% if form -%}
+        {{lists.form(form)}}
+	{%- endif %}
+    {% if table -%}
+        {{lists.fliter("rr")}}
+        {{lists.table(table)}}
 	{%- endif %}
 {%- endblock %}

@@ -83,7 +83,7 @@
         }
 #}
 {% macro form(dict) %}
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
     {% if not dict.data %}{# 添加 #}
         <form class="form-inline" action="{{dict.url}}" method="post">
             <div class="row">
@@ -127,4 +127,17 @@
 
     {% endif %}
     </div>
+{% endmacro %}
+{# 列表 #}
+{# dict={
+        name:,
+        data:[(),()]
+        }
+#}
+{% macro list(dict) %}
+    <ul class="list-group">
+    {% for t in dict.data %}
+        <li class="list-group-item"><a href={{t[1]}}>{{t[0]}}</a></li>
+    {% endfor %}
+    </ul>
 {% endmacro %}
