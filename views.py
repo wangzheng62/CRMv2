@@ -1,8 +1,8 @@
-from flask import Flask, redirect, url_for, render_template, request, flash
+from flask import Flask, redirect, url_for, render_template, request, flash,session,g
 from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datadisplay import Datatojson
-import func,time
+from pages import href
 app = Flask(__name__)
 app.secret_key = 'some_secret'
 login_manager = LoginManager()
@@ -11,8 +11,11 @@ login_manager.init_app(app)
 @app.route("/test",methods=['GET','POST'])
 def test():
     if request.method =='GET':
-        testdict = Datatojson(Product(),step=2)
-        return render_template('test.html',testdict=testdict)
+        table = Datatojson(Product,step=2)
+        g.name = 1
+        print(g)
+        print(table)
+        return render_template('test.html',pages=href,table=table)
     else:
         testdict = Datatojson(Product)
         return render_template('test.html', testdict=testdict)
@@ -45,6 +48,7 @@ def login():
         print('1')
         login_user(e)
         flash('登陆成功')
+        href['username']=kw['name']
         return redirect(url_for('index'))
     else:
         print('1')

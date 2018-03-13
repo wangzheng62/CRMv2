@@ -8,11 +8,14 @@
     <li role="presentation" ><a href="/ordermain" >订单管理</a></li>
     <li role="presentation" ><a href="/productmain" >产品管理</a></li>
     <li role="presentation" ><a href="/employeemain">人事管理</a></li>
+    {% if pages.name -%}
+        <li role="presentation" ><a href="#">{{pages.name}}</a></li>
+	{%- endif %}
     </ul>
 {% endblock %}
 {% block left -%}
-    {% if listofleft -%}
-        {{lists.list(listofleft)}}
+    {% if pages.listofleft -%}
+        {{lists.list(pages.listofleft)}}
 	{%- endif %}
 {%- endblock %}
 {% block pagearea -%}
