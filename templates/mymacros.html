@@ -135,9 +135,9 @@
         }
 #}
 {% macro list(dict) %}
-    <ul class="list-group">
+    <div class="list-group">
     {% for t in dict.data %}
-        <li class="list-group-item"><a href={{t[1]}}>{{t[0]}}</a></li>
+        <a class="list-group-item" href="{{t[1]}}">{{t[0]}}</a>
     {% endfor %}
-    </ul>
+    </div>
 {% endmacro %}

@@ -4,13 +4,6 @@
 {% block title %}测试页{%endblock%}
 {% block top %}
     <ul class="nav navbar-nav">
-    <li role="presentation" ><a href="/customermain" >客户管理</a></li>
-    <li role="presentation" ><a href="/ordermain" >订单管理</a></li>
-    <li role="presentation" ><a href="/productmain" >产品管理</a></li>
-    <li role="presentation" ><a href="/employeemain">人事管理</a></li>
-    {% if pages.name -%}
-        <li role="presentation" ><a href="#">{{pages.name}}</a></li>
-	{%- endif %}
     </ul>
 {% endblock %}
 {% block left -%}

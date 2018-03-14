@@ -2,7 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, flash,sess
 from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datadisplay import Datatojson,getobj
-from pages import href
+from pages import pagedata01
 app = Flask(__name__)
 app.secret_key = 'some_secret'
 login_manager = LoginManager()
@@ -13,11 +13,11 @@ def test():
     if request.method =='GET':
         d={'product_price':15000}
         table = Datatojson(Product(**d),step=2)
-        href['table']=table
+        pagedata01['table']=table
         g.name = 1
         print(g)
         print(table)
-        return render_template('test.html',pages=href)
+        return render_template('test.html',pages=pagedata01)
     else:
         d=request.form.to_dict()
         print(d)
@@ -141,32 +141,22 @@ def analyzecustomer():
 # 产品页
 @app.route('/productnow')
 def productnow():
-    return render_template('productmain.html', welcome="本功能尚未开放")
+    return render_template('test.html', pages=pagedata01)
 
 
 @app.route('/productsearch')
 def productsearch():
-    res = Product.fetchall()
-    res.insert(0, Product.colnames())
-    return render_template('productmain.html', productlist=res)
+    return render_template('test.html', pages=pagedata01)
 
 
 @app.route('/productadd')
 def productadd():
-    res = Product.desc()
-    ee = Colnamesmap.desc()
-    print(ee)
-    d = {
-        "name": '',
-        "url": 'addproduct',
-        "desc": res,
-    }
-    return render_template('productmain.html', productform=d)
+    return render_template('test.html', pages=pagedata01)
 
 
 @app.route('/productanalyze')
 def productanalyze():
-    return render_template('productmain.html', welcome="本功能尚未开放")
+    return render_template('test.html', pages=pagedata01)
 
 
 # 产品页功能

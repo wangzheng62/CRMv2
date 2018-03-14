@@ -51,6 +51,11 @@ function page(event) {
     $('table').eq(t-1).removeClass("invisible");
 
 }
+function list(event) {
+     alert(document.referrer);
+    $(".list-group-item").removeClass('active');
+    $(event.target).addClass('active');
+}
 function selectall() {
     $("td:visible").parent().toggleClass('info');
     
