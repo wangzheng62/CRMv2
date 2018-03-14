@@ -17,11 +17,11 @@ function f1(event) {
     str=str+"<input type='submit' value='修改'>"+"</form>"
     $("#formarea").html(str);
 }
-function f2() {
+function f2(event) {
     var t=$(event.target).text();
     var n=$(event.target).attr("name");
     str=" "+"<input type='text' name="+n+" class='form-text' placeholder="+t+">";
-    $("#fliter").append(str);
+    $("#fliterform").append(str);
 
 
 }
@@ -31,8 +31,8 @@ function f3() {
 
 }
 function f4() {
-
-  $(event.target).remove()
+    alert(1);
+    $(event.target).remove();
 
 }
 function selected(event) {
@@ -56,7 +56,10 @@ function selectall() {
     
 }
 function fliter() {
-    var d=$("form").serialize();
+    var d=$("#fliterform").serialize();
+    var table_name=$("#fliterform").attr('name');
+    d=d+"&tablename="+table_name
+    alert(d);
     $.post('test',d,function (data) {
         $("#tablearea").html(data);
 
@@ -76,10 +79,9 @@ $(document).ready(function () {
     $("body").on("dblclick","td",f1);
     $("body").on("click","td",selected);
     $("body").on("dblclick","th:gt(0)",f2);
-    $("body").on("change",":text",f3);
-    $("body").on("dblclick","#fliter:text",f4);
+    $("body").on("dblclick","#fliterform:text",f4);
     $("body").on("click","li",page);
     $("body").on("click",":checkbox",selectall);
-    $("body").on("click","#bt",fliter);
+    $("body").on("click","button",fliter);
     $("body").on("click",".bg",rm);
 })

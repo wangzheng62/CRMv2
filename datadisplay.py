@@ -1,8 +1,8 @@
-from func import Colnamesmap
+from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 class Datatojson(dict):
     def __init__(self,obj,step = 30):
         d={}
-        d["table_name"]=obj.table_name
+        d["tablename"]=obj.table_name
         d["desc"]=obj.desc()
         colnames = obj.colnames()
         chinese = []
@@ -24,6 +24,17 @@ class Datatojson(dict):
             pages=1
         d["pages"]=pages
         dict.__init__(self,**d)
+def getobj(**kw):
+    tablename=kw['tablename']
+    kw.pop('tablename')
+    print(kw)
+    if kw=={}:
+        return eval(tablename)
+    else:
+        ins=eval('%s(**kw)'%tablename)
+        return ins
+
+
 if __name__=='__main__':
     from func import Product
     d=Datatojson(Product,step = 2)

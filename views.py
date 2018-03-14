@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, flash,session,g
 from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 from flask_login import LoginManager, login_user, login_required, logout_user
-from datadisplay import Datatojson
+from datadisplay import Datatojson,getobj
 from pages import href
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -11,14 +11,19 @@ login_manager.init_app(app)
 @app.route("/test",methods=['GET','POST'])
 def test():
     if request.method =='GET':
-        table = Datatojson(Product,step=2)
+        d={'product_price':15000}
+        table = Datatojson(Product(**d),step=2)
+        href['table']=table
         g.name = 1
         print(g)
         print(table)
-        return render_template('test.html',pages=href,table=table)
+        return render_template('test.html',pages=href)
     else:
-        testdict = Datatojson(Product)
-        return render_template('test.html', testdict=testdict)
+        d=request.form.to_dict()
+        print(d)
+        p=getobj(**d)
+        table=Datatojson(p)
+        return render_template('datapage.html',testdict=table)
 @app.route("/test01",methods=['GET','POST'])
 def test01():
     print(request.method)

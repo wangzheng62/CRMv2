@@ -20,11 +20,11 @@
 {%- endblock %}
 {% block pagearea -%}
 {# 功能框 #}
-    {% if form -%}
-        {{lists.form(form)}}
+    {% if pages.form -%}
+        {{lists.form(pages.form)}}
 	{%- endif %}
-    {% if table -%}
-        {{lists.fliter("rr")}}
-        {{lists.table(table)}}
+    {% if pages.table -%}
+        {{lists.fliter(pages.table.tablename)}}
+        {{lists.table(pages.table)}}
 	{%- endif %}
 {%- endblock %}
