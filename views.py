@@ -17,7 +17,7 @@ def test():
         g.name = 1
         print(g)
         print(table)
-        return render_template('test.html',pages=pagedata01)
+        return render_template('main.html',pages=pagedata01)
     else:
         d=request.form.to_dict()
         print(d)
@@ -42,23 +42,22 @@ def load_user(user_id):
 
 @app.route('/')
 def root():
-    return render_template('login.html')
+    return render_template('main.html',login=True,pages=False)
 
 
 @app.route('/login', methods=['get', 'post'])
 def login():
     kw = request.form.to_dict()
-    e = Employee(user_id=kw['name'])
-    if e.count() == 1 and kw['pw']==e.search()[0][9]:
+    e = Employee(user_id=kw['username'])
+    if e.count() == 1 and kw['password']==e.search()[0][9]:
         print('1')
         login_user(e)
         flash('登陆成功')
-        href['username']=kw['name']
-        return redirect(url_for('index'))
+        return redirect(url_for('test'))
     else:
         print('1')
         flash('账户或密码不对')
-        return render_template('login.html')
+        return render_template('main.html', login=True, pages=False)
 
 
 @app.route('/index')

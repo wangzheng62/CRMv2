@@ -13,6 +13,9 @@
 {%- endblock %}
 {# 中间数据显示 #}
 {% block center -%}
+    {% if login %}
+        {{macros.login()}}
+    {% endif %}
     {% if pages.form -%}
         {{macros.form(pages.form)}}
 	{%- endif %}
@@ -23,4 +26,11 @@
 {%- endblock %}
 {# 右侧信息反馈 #}
 {% block right -%}
+    {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            {% for message in messages %}
+                <script>alert("{{ message }}")</script>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 {%- endblock %}
