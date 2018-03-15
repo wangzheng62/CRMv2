@@ -1,23 +1,26 @@
 
-{% extends 'index.html' %}
-{% import 'mymacros.html'as lists %}
+{% extends 'base.html' %}
+{% import 'mymacros.html'as macros %}
 {% block title %}测试页{%endblock%}
+{# 导航条 #}
 {% block top %}
-    <ul class="nav navbar-nav">
-    </ul>
 {% endblock %}
+{# 左侧列表 #}
 {% block left -%}
     {% if pages.listofleft -%}
-        {{lists.list(pages.listofleft)}}
+        {{macros.list(pages.listofleft)}}
 	{%- endif %}
 {%- endblock %}
-{% block pagearea -%}
-{# 功能框 #}
+{# 中间数据显示 #}
+{% block center -%}
     {% if pages.form -%}
-        {{lists.form(pages.form)}}
+        {{macros.form(pages.form)}}
 	{%- endif %}
     {% if pages.table -%}
-        {{lists.fliter(pages.table.tablename)}}
-        {{lists.table(pages.table)}}
+        {{macros.fliter(pages.table.tablename)}}
+        {{macros.table(pages.table)}}
 	{%- endif %}
+{%- endblock %}
+{# 右侧信息反馈 #}
+{% block right -%}
 {%- endblock %}
