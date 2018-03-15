@@ -6,6 +6,8 @@
 	<script src="/static/js/jquery-3.2.1.js"></script>
     <script src="/static/js/bootstrap.js"></script>
     <script src="/static/js/echarts.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/mytable.css" />
+    <script src="/static/js/mytable.js"></script>
     {% block link %}{% endblock %}
     {% block script %}{% endblock %}
     <title>{% block title %}{% endblock %}</title>
@@ -13,8 +15,19 @@
 <body>
 <div class="container-fluid">
     <nav id="top" class="navbar navbar-inverse">
-        <ul class="nav navbar-nav">
-            {% block top %}{% endblock %}
+        <ul class="nav navbar-nav col-lg-6 col-md-6 col-sm-6 col-xs-6">
+            {% block top01 %}{% endblock %}
+        </ul>
+        <ul class="nav navbar-nav col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            {% block top02 %}{% endblock %}
+        </ul>
+        <ul class="nav navbar-nav col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <li role="presentation"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></li>
+            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+            {% block top03 %}{% endblock %}
+        </ul>
+        <ul class="nav navbar-nav col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            {% block top04 %}{% endblock %}
         </ul>
     </nav>
 

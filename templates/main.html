@@ -3,7 +3,10 @@
 {% import 'mymacros.html'as macros %}
 {% block title %}测试页{%endblock%}
 {# 导航条 #}
-{% block top %}
+{% block top04 %}
+    {% if pages.top -%}
+         {{macros.userinfo()}}
+	{%- endif %}
 {% endblock %}
 {# 左侧列表 #}
 {% block left -%}

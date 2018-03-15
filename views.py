@@ -8,6 +8,7 @@ app.secret_key = 'some_secret'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+#测试模块
 @app.route("/test",methods=['GET','POST'])
 def test():
     if request.method =='GET':
@@ -15,56 +16,39 @@ def test():
         table = Datatojson(Product(**d),step=2)
         pagedata01['table']=table
         g.name = 1
-        print(g)
-        print(table)
         return render_template('main.html',pages=pagedata01)
     else:
         d=request.form.to_dict()
-        print(d)
         p=getobj(**d)
         table=Datatojson(p)
         return render_template('datapage.html',testdict=table)
-@app.route("/test01",methods=['GET','POST'])
-def test01():
-    print(request.method)
-    if request.method =='GET':
-        return 'aa'
-    elif request.method =='POST':
-        print(request.data)
-        return 'test_list'
-    else:
-        return 'lalal'
-@login_manager.user_loader
-def load_user(user_id):
-    print(user_id)
-    return Employee(user_id=user_id)
-
 
 @app.route('/')
-def root():
+def index():
     return render_template('main.html',login=True,pages=False)
 
-
+#登陆模块
 @app.route('/login', methods=['get', 'post'])
 def login():
     kw = request.form.to_dict()
     e = Employee(user_id=kw['username'])
     if e.count() == 1 and kw['password']==e.search()[0][9]:
-        print('1')
         login_user(e)
         flash('登陆成功')
         return redirect(url_for('test'))
     else:
-        print('1')
         flash('账户或密码不对')
-        return render_template('main.html', login=True, pages=False)
-
-
-@app.route('/index')
+        return redirect(url_for('index'))
+@login_manager.user_loader
+def load_user(user_id):
+    return Employee(user_id=user_id)
+@app.route("/logout")
 @login_required
-def index():
-    return render_template('index.html')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
+#页面注册
 
 @app.route('/customermain')
 def customermain():
