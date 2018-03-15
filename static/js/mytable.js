@@ -9,12 +9,11 @@ function f1(event) {
     for (;i<len;i++)
     {
         nm=th1[i].getAttribute('name')
-        s1="<div class='col-lg-1 col-md-1 col-sm-1 col-xs-1'><label for=" +nm+ "class ='control-label'> " +nm+":</label>"
+        s1="<div class='col-lg-6 col-md-6 col-sm-6 col-xs-6'><label for=" +nm+ "class ='control-label'> " +nm+":</label>"
         s2="<input type='text' class='form-control' name="+nm+" value="+td1[i].innerHTML+"></div>"
         str=str+s1+s2
     }
-    alert(1);
-    str=str+"<input type='submit' value='修改'>"+"</form>"
+    str=str+"<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><input type='submit'value='修改'>"+"</form></div>"
     $("#formarea").html(str);
 }
 function f2(event) {
