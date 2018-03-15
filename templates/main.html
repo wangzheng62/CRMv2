@@ -29,6 +29,7 @@
 {%- endblock %}
 {# 右侧信息反馈 #}
 {% block right -%}
+    {{macros.bgmain()}}
     {% with messages = get_flashed_messages() %}
          {% if messages %}
             {% for message in messages %}

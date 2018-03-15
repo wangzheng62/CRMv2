@@ -19,6 +19,7 @@ def test():
         return render_template('main.html',pages=pagedata01)
     else:
         d=request.form.to_dict()
+        print(d)
         p=getobj(**d)
         table=Datatojson(p)
         return render_template('datapage.html',testdict=table)

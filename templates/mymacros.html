@@ -1,6 +1,6 @@
 
 {% macro fliter(tablename) -%}
-    <div class="col-lg-12 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
     <button id="fliterbt" class="btn btn-primary btn-sm floatleft">过滤</button><form id="fliterform" name="{{tablename}}"  class="floatleft">:</form>
     </div>
 {%- endmacro %}
@@ -14,7 +14,7 @@
 #}
 {% macro table(dict) -%}
     {# 分页 #}
-    <div id="tablearea" class="col-lg-12 col-md-12 col-sm-12">
+    <div id="tablearea" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <ul class="pagination pagination-sm floatright">
             <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
             {% for num in range(1,dict.pages + 1) -%}
@@ -31,24 +31,24 @@
         {% if loop.index == 1 -%}
         <table class="table table-condensed">
         <tr>
-            <th><input type="checkbox"/></th>
+            <th class="col-lg-1 col-md-1 col-sm-1 col-xs-1"><input type="checkbox"/></th>
             {% for col in dict.colnames -%}
-                <th name="{{col[0]}}">{{col[1]}}</th>
+                <th name="{{col[0]}}" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{col[1]}}</th>
             {%- endfor %}
         </tr>
         {% elif loop.index%dict.step==1 and loop.index!=1 -%}
             <table class="table table-condensed invisible">
         <tr>
-            <th><input type="checkbox"/></th>
+            <th class="col-lg-1 col-md-1 col-sm-1 col-xs-1"><input type="checkbox"/></th>
             {% for col in dict.colnames -%}
-                <th name="{{col[0]}}">{{col[1]}}</th>
+                <th name="{{col[0]}}" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{col[1]}}</th>
             {%- endfor %}
         </tr>
         {%- endif %}
         <tr>
             <td>{{loop.index}}</td>
             {% for td in row -%}
-                <td>{{td}}</td>
+                <td class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{td}}</td>
             {%- endfor %}
         </tr>
         {% if ((loop.index + 1)%dict.step==1 and not loop.first) or loop.last -%}
@@ -56,9 +56,6 @@
         {%- endif %}
     {%- endfor %}
     </div>
-{%- endmacro %}
-{# 弹出窗口背景 #}
-{% macro bgmain() -%}
 {%- endmacro %}
 {# form模板 #}
 {% macro col(key,notnull) -%}
@@ -162,3 +159,17 @@
     <li role="presentation"><a href="#" >wz</a></li>
     <li role="presentation"><a href="/logout" >注销</a></li>
 {% endmacro %}
+{# 弹出窗口背景 #}
+{% macro bgmain() -%}
+    <div id="bgmain" class="bgmain invisible">
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg height16"></div>
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 bg height80"></div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 height80">
+            <div id="formarea" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 centerform"></div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg height16"></div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-xs-2 bg height80"></div>
+
+    </div>
+{%- endmacro %}

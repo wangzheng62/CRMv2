@@ -9,8 +9,8 @@ function f1(event) {
     for (;i<len;i++)
     {
         nm=th1[i].getAttribute('name')
-        s1="<label for="+nm+"class='control-label'>"+nm+":</label>"
-        s2="<input type='text' class='form-control' name="+nm+" value="+td1[i].innerHTML+">"
+        s1="<div class='col-lg-1 col-md-1 col-sm-1 col-xs-1'><label for=" +nm+ "class ='control-label'> " +nm+":</label>"
+        s2="<input type='text' class='form-control' name="+nm+" value="+td1[i].innerHTML+"></div>"
         str=str+s1+s2
     }
     alert(1);
