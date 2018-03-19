@@ -3,9 +3,15 @@ function f1(event) {
     $("#bgmain").removeClass("invisible");
     $(".active").addClass('mark');
     $(".active").removeClass('active');
-    var td1=$(event.target.parentNode).children("td:gt(1)");
-    var th1=$("tr:first").children(":gt(1)");
-    var i=0,len=th1.length,str="<form class='form-group'>";
+    var td1=$(event.target.parentNode).children("td:gt(0)");
+    var th1=$("tr:first").children(":gt(0)");
+    str=th1[0].getAttribute('name')+"="+td1[0].innerHTML
+    alert(str);
+    $.post("/test01",str,function (data) {
+        $("#formarea").html(data);
+
+    })
+    /*var i=0,len=th1.length,str="<form class='form-group'>";
     for (;i<len;i++)
     {
         nm=th1[i].getAttribute('name')
@@ -14,7 +20,7 @@ function f1(event) {
         str=str+s1+s2
     }
     str=str+"<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><input type='submit'value='修改'>"+"</form></div>"
-    $("#formarea").html(str);
+    $("#formarea").html(str);*/
 }
 function f2(event) {
     var t=$(event.target).text();

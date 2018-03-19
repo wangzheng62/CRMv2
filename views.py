@@ -23,6 +23,12 @@ def test():
         p=getobj(**d)
         table=Datatojson(p)
         return render_template('datapage.html',testdict=table)
+@app.route("/test01",methods=['GET','POST'])
+def test01():
+    if request.method=="POST":
+        d=request.form.to_dict()
+        print(d)
+        return "hahahaha"
 
 @app.route('/')
 def index():
