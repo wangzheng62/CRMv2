@@ -196,7 +196,7 @@ class MysqlTable(MysqlTableBase):
             return False
 
 
-        pass
+
 
     # 辅助功能
 

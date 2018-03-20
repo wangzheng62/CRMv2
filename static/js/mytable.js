@@ -1,4 +1,4 @@
-function f1(event) {
+function updatetable(event) {
     var t=$(event.target.parentNode)
     $("#bgmain").removeClass("invisible");
     $(".active").addClass('mark');
@@ -22,7 +22,7 @@ function f1(event) {
     str=str+"<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'><input type='submit'value='修改'>"+"</form></div>"
     $("#formarea").html(str);*/
 }
-function f2(event) {
+function addfilter(event) {
     var t=$(event.target).text();
     var n=$(event.target).attr("name");
     str=" "+"<input type='text' name="+n+" class='form-text' placeholder="+t+">";
@@ -35,8 +35,7 @@ function f3() {
     alert(t)
 
 }
-function f4() {
-    alert(1);
+function rmthis() {
     $(event.target).remove();
 
 }
@@ -76,7 +75,7 @@ function fliter() {
     })
 
 }
-function rm(event) {
+function rmbgmain(event) {
 
     $("#bgmain").addClass("invisible");
     $(".mark").addClass("active");
@@ -84,14 +83,19 @@ function rm(event) {
 
 
 }
+function rmbgyellow(event) {
+    $(event.target).removeClass('bgyellow');
+}
 $(document).ready(function () {
 
-    $("body").on("dblclick","td",f1);
+    $("body").on("dblclick","td",updatetable);
     $("body").on("click","td",selected);
-    $("body").on("dblclick","th:gt(0)",f2);
-    $("body").on("dblclick","#fliterform:text",f4);
+    $("body").on("dblclick","th:gt(0)",addfilter);
+    $("body").on("dblclick","#fliterform:text",rmthis);
     $("body").on("click","li",page);
     $("body").on("click",":checkbox",selectall);
     $("body").on("click","button",fliter);
-    $("body").on("click",".bg",rm);
+    $("body").on("click",".bg",rmbgmain);
+    $("body").on("change",":text",rmbgyellow);
+
 })

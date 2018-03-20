@@ -1,7 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, request, flash,session,g
 from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 from flask_login import LoginManager, login_user, login_required, logout_user
-from datadisplay import Datatojson,getobj
+from datadisplay import Datatojson,getobj,Formdata
 from pages import pagedata01
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -14,9 +14,10 @@ def test():
     if request.method =='GET':
         d={'product_price':15000}
         table = Datatojson(Product(**d),step=2)
-        pagedata01['table']=table
+        pd=dict(**pagedata01)
+        pd['table']=table
         g.name = 1
-        return render_template('main.html',pages=pagedata01)
+        return render_template('main.html',pages=pd)
     else:
         d=request.form.to_dict()
         print(d)
@@ -141,7 +142,11 @@ def productsearch():
 
 @app.route('/productadd')
 def productadd():
-    return render_template('test.html', pages=pagedata01)
+    d=Formdata(Product)
+    pd = dict(**pagedata01)
+    pd['form']=d
+    print(pagedata01)
+    return render_template('main.html', pages=pd)
 
 
 @app.route('/productanalyze')

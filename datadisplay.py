@@ -1,4 +1,4 @@
-from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
+from func import Colnamesmap
 class Datatojson(dict):
     def __init__(self,obj,step = 30):
         d={}
@@ -33,12 +33,28 @@ def getobj(**kw):
     else:
         ins=eval('%s(**kw)'%tablename)
         return ins
+'''
+dict={
+        "name":'',
+        "url":'',
+        "desc":[(),()],
+        "map":{"":"","":""},
+        "data":[(),()]
+    }
+'''
 
-
+class Formdata(dict):
+    def __init__(self, obj, *args):
+        _dict = {"name": obj.table_name, 'url': '/#', "desc": obj.desc(), "data": args}
+        fileds = obj.colnames()
+        chinese = []
+        for filed in fileds:
+            aa = Colnamesmap(colname=filed)
+            chinese.append(aa.search()[0][2])
+        map = dict(zip(fileds, chinese))
+        _dict['map']=map
+        dict.__init__(self, **_dict)
 if __name__=='__main__':
     from func import Product
-    d=Datatojson(Product,step = 2)
+    d=Formdata(Product)
     print(d)
-    p=Product()
-    d1=Datatojson(p)
-    print(d1)

@@ -144,7 +144,10 @@ class MysqlDB(MysqlDBBase):
 
 
 class MysqlTable(MysqlTableBase):
-    def __init__(self, **kw):
+    def __init__(self, *args,**kw):
+        print(self.desc())
+        if args:
+            print('args={}'.format(args))
         for key in kw:
             assert key in self.colnames(), "当前表中没有->{}<-列".format(key)
         self.info = kw
@@ -214,16 +217,11 @@ if __name__ == '__main__':
         pass
 
 
+    class Crm(MysqlDB, DBserver):
+        pass
+    class Product(MysqlTable, Crm):
+        pass
     db = DBserver()
     l = Group10(**{'QunNum': 900002})
-    print(l.info)
-    print(db.databases())
-    print(l.DBSERVER)
-    print(l.db_name)
-    print(l.table_name)
-    print(l.databases())
-    print(l.tables())
-    print(l.colnames())
-    print(l.desc())
-    print(l.count())
-    print(l.search())
+    p=Product()
+
