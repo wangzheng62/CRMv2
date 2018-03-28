@@ -78,6 +78,7 @@ class MysqlDBBase(metaclass=MysqlDBmetaclass):
 
 
 class MysqlTableBase(metaclass=MysqlTableMetaclass):
+
     @classmethod
     def desc(cls):
         t0 = ('Field', 'Type', 'Null', 'Key', 'Default', 'Extra')
@@ -96,15 +97,15 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
             __colnames.append(tp[0])
         return __colnames
 
-    # 增删改查
+    # DML增删改查
     @classmethod
-    def select(cls, DISTINCT='', COLNAMES='', TABLES='', WHERE='', LIMIT='', ORDER_BY=''):
-        __SELECT = "select {} {} from {} {} {} {};".format(DISTINCT, COLNAMES, TABLES, WHERE, LIMIT, ORDER_BY)
+    def select(cls, DISTINCT='', FIELD='', TABLES='', WHERE='', LIMIT='', ORDER_BY=''):
+        __SELECT = "select {} {} from {} {} {} {};".format(DISTINCT, FIELD, TABLES, WHERE, LIMIT, ORDER_BY)
         return __SELECT
 
     @classmethod
-    def insert(cls, TABLES='', COLNAMES='', VALUES=''):
-        __INSERT = "insert into {} {} values {};".format(TABLES, COLNAMES, VALUES)
+    def insert(cls, TABLES='', FIELD='', VALUES=''):
+        __INSERT = "insert into {} {} values {};".format(TABLES, FIELD, VALUES)
         return __INSERT
 
     @classmethod
@@ -116,19 +117,31 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
     def delete(cls, TABLES='', WHERE=''):
         __DELECT = "delete from {} {};".format(TABLES, WHERE)
         return __DELECT
-
+    #DDL更改表
+    @classmethod
+    def addcol(cls,TABLES='',FIELD='',DATATYPE=''):
+        __ADDCOL="ALTER TABLE {} ADD {} {};".format(TABLES,FIELD,DATATYPE)
+        return __ADDCOL
+    @classmethod
+    def altercol(cls):
+        __ALTERCOL = "ALTER TABLE {} ALTER COLUMN {};".format(TABLES, FIELD)
+        return __ALTERCOL
+    @classmethod
+    def dropcol(cls,TABLES='',FIELD=''):
+        __DROPCOL = "ALTER TABLE {} DROP COLUMN {} {};".format(TABLES, FIELD,DATATYPE)
+        return __DROPCOL
     # 列出表内总数
     @classmethod
     def fetchall(cls, NUM=0):
         if NUM == 0:
-            __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name)
+            __SQL = cls.select(FIELD='*', TABLES=cls.table_name)
         else:
-            __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name, LIMIT='LIMIT {}'.format(NUM))
+            __SQL = cls.select(FIELD='*', TABLES=cls.table_name, LIMIT='LIMIT {}'.format(NUM))
         return cls.getdata(__SQL)
 
     @classmethod
     def colnum(cls):
-        __SQL = cls.select(COLNAMES='count(*)', TABLES=cls.table_name)
+        __SQL = cls.select(FIELD='count(*)', TABLES=cls.table_name)
         print(__SQL)
         __NUM = cls.getdata(__SQL)
         return __NUM[0][0]
@@ -145,7 +158,6 @@ class MysqlDB(MysqlDBBase):
 
 class MysqlTable(MysqlTableBase):
     def __init__(self, *args,**kw):
-        print(self.desc())
         if args:
             print('args={}'.format(args))
         for key in kw:
@@ -157,7 +169,7 @@ class MysqlTable(MysqlTableBase):
         for key in self.info:
             __condition = __condition + ' {}=\'{}\' and'.format(key, self.info[key])
         __condition = __condition[:-4]
-        __SQL = self.select(COLNAMES='count(*)', TABLES=self.table_name, WHERE=__condition)
+        __SQL = self.select(FIELD='count(*)', TABLES=self.table_name, WHERE=__condition)
         __NUM = self.getdata(__SQL)
         return __NUM[0][0]
 
@@ -173,9 +185,9 @@ class MysqlTable(MysqlTableBase):
         else:
             __condition = __condition[:-4]
             if NUM == 0:
-                __SQL = self.select(COLNAMES='*', TABLES=self.table_name, WHERE=__condition)
+                __SQL = self.select(FIELD='*', TABLES=self.table_name, WHERE=__condition)
             else:
-                __SQL = self.select(COLNAMES='*', TABLES=self.table_name, WHERE=__condition, LIMIT='LIMIT {}'.format(NUM))
+                __SQL = self.select(FIELD='*', TABLES=self.table_name, WHERE=__condition, LIMIT='LIMIT {}'.format(NUM))
             return self.getdata(__SQL)
 
     def save(self):
@@ -189,7 +201,7 @@ class MysqlTable(MysqlTableBase):
                 __VALUES=__VALUES+'\''+self.info[key]+'\''+','
         __COLNAME=__COLNAME[:-1]+')'
         __VALUES=__VALUES[:-1]+')'
-        __SQL=self.insert(TABLES=self.table_name,COLNAMES=__COLNAME,VALUES=__VALUES)
+        __SQL=self.insert(TABLES=self.table_name,FIELD=__COLNAME,VALUES=__VALUES)
         print(__SQL)
         try:
             self.changedata(__SQL)
@@ -224,4 +236,5 @@ if __name__ == '__main__':
     db = DBserver()
     l = Group10(**{'QunNum': 900002})
     p=Product()
+    print(Group10.desc())
 
