@@ -127,6 +127,39 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
         return cls.getdata(__SQL)
 
     @classmethod
+    def fetchall__lazy(cls, BUFFERSIZE=0):
+        if BUFFERSIZE == 0:
+            __SQL = cls.select(FIELD='*', TABLES=cls.table_name)
+            yield cls.getdata(__SQL)
+        else:
+            i = 0
+            m = 0
+            while (True):
+                __SQL = cls.select(FIELD='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format(m, BUFFERSIZE))
+                if cls.getdata(__SQL) == []:
+                    m = m - BUFFERSIZE
+                    i = i - 1
+                    __SQL = cls.select(FIELD='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format(m, BUFFERSIZE))
+                    offset = yield cls.getdata(__SQL)
+
+                else:
+                    __SQL = cls.select(FIELD='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format(m, BUFFERSIZE))
+                    offset = yield cls.getdata(__SQL)
+                if offset == 0 or offset == None:
+                    i = i + 1
+                    m = i * BUFFERSIZE
+
+                elif offset == -1:
+                    i = i - 1
+                    m = i * BUFFERSIZE
+
+                elif isinstance(offset, int) and offset != -1 and offset != 0:
+                    i = offset - 1
+                    m = i * BUFFERSIZE
+                else:
+                    pass
+
+    @classmethod
     def colnum(cls):
         __SQL = cls.select(COLNAMES='count(*)', TABLES=cls.table_name)
         print(__SQL)
