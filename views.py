@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, render_template, request, flash,sess
 from func import DBserver, Crm, Product, Orderlist, Employee, Customer,Colnamesmap
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datadisplay import Datatojson,getobj,Formdata
+from test import buffer
 from pages import pagedata01
 app = Flask(__name__)
 app.secret_key = 'some_secret'
@@ -11,26 +12,20 @@ login_manager.init_app(app)
 #测试模块
 @app.route("/test",methods=['GET','POST'])
 def test():
-    if request.method =='GET':
-        d={'product_price':15000}
-        table = Datatojson(Product(**d),step=2)
-        pd=dict(**pagedata01)
-        pd['table']=table
-        g.name = 1
-        return render_template('main.html',pages=pd)
-    else:
-        d=request.form.to_dict()
-        print(d)
-        p=getobj(**d)
-        table=Datatojson(p)
-        return render_template('datapage.html',testdict=table)
-@app.route("/test01",methods=['GET','POST'])
-def test01():
-    d=request.form.to_dict()
-    print(d)
-    while(True):
-        a=1
-    return "hahahaha"
+    p=Product()
+    #session["message"]=p
+    print(session["message"])
+    return render_template('test.html')
+@app.route("/test01/<page>",methods=['GET','POST'])
+def test01(page):
+
+    print(page)
+    p = Product.fetchall()
+    print(p)
+    b=buffer(*p)
+    print(b)
+    b.send(None)
+    return  str(b.send(page))
 
 @app.route('/')
 def index():

@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+{% import 'mymacros.html'as macros %}
+{% block title %}index{% endblock %}
+{% block left %}
+    <a href="test01/1">ttt</a>
+{% endblock %}
+{% block center %}
+    <ul class="pagination pagination-sm floatright">
+        <li><a href="#" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+        <li class="active"><a>1</a></li>
+        <li><a>2</a></li>
+        <li><a>3</a></li>
+        <li><a>4</a></li>
+        <li><a>5</a></li>
+        <li><a href="#" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+    </ul>
+{% endblock %}
