@@ -156,18 +156,18 @@ class MysqlDB(MysqlDBBase):
     pass
 
 
-class MysqlTable(MysqlTableBase):
+class MysqlTable(dict,MysqlTableBase):
     def __init__(self, *args,**kw):
         if args:
             print('args={}'.format(args))
         for key in kw:
             assert key in self.colnames(), "当前表中没有->{}<-列".format(key)
-        self.info = kw
+        dict.__init__(self, **kw)
 
     def count(self):
         __condition = 'where'
-        for key in self.info:
-            __condition = __condition + ' {}=\'{}\' and'.format(key, self.info[key])
+        for key in self:
+            __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
         __condition = __condition[:-4]
         __SQL = self.select(FIELD='count(*)', TABLES=self.table_name, WHERE=__condition)
         __NUM = self.getdata(__SQL)
@@ -175,11 +175,11 @@ class MysqlTable(MysqlTableBase):
 
     def search(self, NUM=0):
         __condition = 'where'
-        for key in self.info:
-            if self.info[key]=='':
+        for key in self:
+            if self[key]=='':
                 pass
             else:
-                __condition = __condition + ' {}=\'{}\' and'.format(key, self.info[key])
+                __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
         if len(__condition)<=6:
             return []
         else:
@@ -193,12 +193,12 @@ class MysqlTable(MysqlTableBase):
     def save(self):
         __COLNAME='( '
         __VALUES='( '
-        for key in self.info:
-            if self.info[key]=='':
+        for key in self:
+            if self[key]=='':
                 pass
             else:
                 __COLNAME=__COLNAME+key+','
-                __VALUES=__VALUES+'\''+self.info[key]+'\''+','
+                __VALUES=__VALUES+'\''+self[key]+'\''+','
         __COLNAME=__COLNAME[:-1]+')'
         __VALUES=__VALUES[:-1]+')'
         __SQL=self.insert(TABLES=self.table_name,FIELD=__COLNAME,VALUES=__VALUES)
@@ -236,5 +236,15 @@ if __name__ == '__main__':
     db = DBserver()
     l = Group10(**{'QunNum': 900002})
     p=Product()
-    print(Group10.desc())
+    print(l.search())
+    i=1
+    l1=[1,2,3,4,5,6,7,8]
+    def ff():
+        i=0
+        while(i<len(l1)):
+            n=yield l1[i]
+            i=i+1
 
+    f=ff()
+    print(f.send(None))
+    print(f.__next__())

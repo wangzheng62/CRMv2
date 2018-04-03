@@ -26,10 +26,11 @@ def test():
         return render_template('datapage.html',testdict=table)
 @app.route("/test01",methods=['GET','POST'])
 def test01():
-    if request.method=="POST":
-        d=request.form.to_dict()
-        print(d)
-        return "hahahaha"
+    d=request.form.to_dict()
+    print(d)
+    while(True):
+        a=1
+    return "hahahaha"
 
 @app.route('/')
 def index():
@@ -290,4 +291,4 @@ def fliter():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True,threaded=True)
