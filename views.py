@@ -12,10 +12,9 @@ login_manager.init_app(app)
 #测试模块
 @app.route("/test",methods=['GET','POST'])
 def test():
-    p=Product()
-    #session["message"]=p
-    print(session["message"])
-    return render_template('test.html')
+    p=Product.fetchall__lazy(2)
+    t=p.send(None)
+    return str(t)
 @app.route("/test01/<page>",methods=['GET','POST'])
 def test01(page):
 
