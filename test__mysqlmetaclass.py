@@ -119,45 +119,14 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
 
     # 列出表内总数
     @classmethod
-    def fetchall(cls, NUM=0):
-        if NUM == 0:
+    def fetch(cls,OFFSET=0,BUFFERSIZE=0):
+        if BUFFERSIZE==0:
             __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name)
         else:
-            __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name, LIMIT='LIMIT {}'.format(NUM))
+            __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format((OFFSET-1)*BUFFERSIZE, BUFFERSIZE))
         return cls.getdata(__SQL)
 
-    @classmethod
-    def fetchall__lazy(cls, BUFFERSIZE=0):
-        if BUFFERSIZE == 0:
-            __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name)
-            yield cls.getdata(__SQL)
-        else:
-            i = 0
-            m = 0
-            while (True):
-                __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format(m, BUFFERSIZE))
-                if cls.getdata(__SQL) == []:
-                    m = m - BUFFERSIZE
-                    i = i - 1
-                    __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format(m, BUFFERSIZE))
-                    offset = yield cls.getdata(__SQL)
 
-                else:
-                    __SQL = cls.select(COLNAMES='*', TABLES=cls.table_name, LIMIT='LIMIT {},{};'.format(m, BUFFERSIZE))
-                    offset = yield cls.getdata(__SQL)
-                if offset == 0 or offset == None:
-                    i = i + 1
-                    m = i * BUFFERSIZE
-
-                elif offset == -1:
-                    i = i - 1
-                    m = i * BUFFERSIZE
-
-                elif isinstance(offset, int) and offset != -1 and offset != 0:
-                    i = offset - 1
-                    m = i * BUFFERSIZE
-                else:
-                    pass
 
     @classmethod
     def colnum(cls):
@@ -249,14 +218,9 @@ if __name__ == '__main__':
 
     db = DBserver()
     l = Group10(**{'QunNum': 900002})
-    print(l.info)
-    print(db.databases())
-    print(l.DBSERVER)
-    print(l.db_name)
-    print(l.table_name)
-    print(l.databases())
-    print(l.tables())
-    print(l.colnames())
-    print(l.desc())
-    print(l.count())
-    print(l.search())
+    from functools import partial
+    fetch=partial(l.fetch,BUFFERSIZE=2)
+    print(fetch(2))
+
+
+

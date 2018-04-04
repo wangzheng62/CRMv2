@@ -50,7 +50,7 @@ class MysqlDBBase(metaclass=MysqlDBmetaclass):
         return conn
 
     @classmethod
-    def getdata(cls, sql):
+    def fetchalldata(cls, sql):
         conn = cls.__getconn()
         cr = conn.cursor()
         cr.execute(sql)
@@ -83,7 +83,7 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
     def desc(cls):
         t0 = ('Field', 'Type', 'Null', 'Key', 'Default', 'Extra')
         sql = 'desc %s;' % cls.table_name
-        __desc = cls.getdata(sql)
+        __desc = cls.fetchalldata(sql)
         __desc.insert(0, t0)
         return __desc
 
@@ -91,7 +91,7 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
     @classmethod
     def colnames(cls):
         sql = 'desc %s;' % cls.table_name
-        t = cls.getdata(sql)
+        t = cls.fetchalldata(sql)
         __colnames = []
         for tp in t:
             __colnames.append(tp[0])
@@ -123,27 +123,28 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
         __ADDCOL="ALTER TABLE {} ADD {} {};".format(TABLES,FIELD,DATATYPE)
         return __ADDCOL
     @classmethod
-    def altercol(cls):
+    def altercol(cls,TABLES='',FIELD=''):
         __ALTERCOL = "ALTER TABLE {} ALTER COLUMN {};".format(TABLES, FIELD)
         return __ALTERCOL
     @classmethod
-    def dropcol(cls,TABLES='',FIELD=''):
+    def dropcol(cls,TABLES='',FIELD='',DATATYPE=''):
         __DROPCOL = "ALTER TABLE {} DROP COLUMN {} {};".format(TABLES, FIELD,DATATYPE)
         return __DROPCOL
-    # 列出表内总数
+    # 查询数据
     @classmethod
-    def fetchall(cls, NUM=0):
-        if NUM == 0:
+    def fetch(cls, OFFSET=0, BUFFERSIZE=0):
+        if BUFFERSIZE == 0:
             __SQL = cls.select(FIELD='*', TABLES=cls.table_name)
         else:
-            __SQL = cls.select(FIELD='*', TABLES=cls.table_name, LIMIT='LIMIT {}'.format(NUM))
-        return cls.getdata(__SQL)
+            __SQL = cls.select(FIELD='*', TABLES=cls.table_name,LIMIT='LIMIT {},{};'.format((OFFSET - 1) * BUFFERSIZE, BUFFERSIZE))
+        return cls.fetchalldata(__SQL)
 
+    # 列出表内总数
     @classmethod
-    def colnum(cls):
+    def count(cls):
         __SQL = cls.select(FIELD='count(*)', TABLES=cls.table_name)
         print(__SQL)
-        __NUM = cls.getdata(__SQL)
+        __NUM = cls.fetchalldata(__SQL)
         return __NUM[0][0]
 
 
@@ -170,7 +171,7 @@ class MysqlTable(dict,MysqlTableBase):
             __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
         __condition = __condition[:-4]
         __SQL = self.select(FIELD='count(*)', TABLES=self.table_name, WHERE=__condition)
-        __NUM = self.getdata(__SQL)
+        __NUM = self.fetchalldata(__SQL)
         return __NUM[0][0]
 
     def search(self, NUM=0):
@@ -188,7 +189,7 @@ class MysqlTable(dict,MysqlTableBase):
                 __SQL = self.select(FIELD='*', TABLES=self.table_name, WHERE=__condition)
             else:
                 __SQL = self.select(FIELD='*', TABLES=self.table_name, WHERE=__condition, LIMIT='LIMIT {}'.format(NUM))
-            return self.getdata(__SQL)
+            return self.fetchalldata(__SQL)
 
     def save(self):
         __COLNAME='( '

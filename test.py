@@ -1,5 +1,5 @@
 
-def buffer(BUFFERSIZE,*args):
+def buffer(*args,BUFFERSIZE=2):
     i=0
     m=0
     n=BUFFERSIZE
@@ -35,32 +35,21 @@ def buffer(BUFFERSIZE,*args):
             n = (i + 1) * BUFFERSIZE
         else:
             pass
-def getbuf(message,*args,BUFFERSIZE=2):
-    while 1:
-        t=yield from buffer(BUFFERSIZE,*args)
-        b.send(None)
-    while(True):
-        b.send(message)
+def getbuf(message,f):
+    try:
+        val=f.send(message)
+    except:
+        f.send(None)
+        val=f.send(message)
+    finally:
+        return val
+
 
 
 if __name__=='__main__':
     from func import Product
     l = Product.fetchall()
     b = buffer(*l)
-    print(b.send(None))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("last"))
-    print(b.send(3))
-    print(b.send("next"))
-    print(b.send("next"))
-    print(b.send("last"))
-
+    print(getbuf(1,b))
+    print(getbuf('next', b))
+    print(getbuf('next', b))
