@@ -1,7 +1,32 @@
 import CONFIG
 import mysql.connector
 
-
+#列
+class Column(dict):
+    def __init__(self,*args):
+        __d={}
+        __d['field']=args[0]
+        __d['type']=args[1]
+        __d['null']=args[2]
+        __d['key']=args[3]
+        __d['default']=args[4]
+        __d['extra']=args[5]
+        dict.__init__(self,**__d)
+    def isnull(self):
+        if self['null']=='NO':
+            return False
+        else:
+            return True
+    def isprimary(self):
+        if self['key']=='PRI':
+            return True
+        else:
+            return False
+    def isunique(self):
+        if self['key']=='UNI':
+            return True
+        else:
+            return False
 # 元类
 class Mysqlservermetaclass(type):
     def __new__(mcs, name, bases, attrs):
@@ -78,14 +103,16 @@ class MysqlDBBase(metaclass=MysqlDBmetaclass):
 
 
 class MysqlTableBase(metaclass=MysqlTableMetaclass):
-
+    #表定义
     @classmethod
     def desc(cls):
-        t0 = ('Field', 'Type', 'Null', 'Key', 'Default', 'Extra')
         sql = 'desc %s;' % cls.table_name
         __desc = cls.fetchalldata(sql)
-        __desc.insert(0, t0)
-        return __desc
+        res=[]
+        for tp in __desc:
+            __d=Column(*tp)
+            res.append(__d)
+        return res
 
     # 获取列名
     @classmethod
@@ -132,7 +159,7 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
         return __DROPCOL
     # 查询数据
     @classmethod
-    def fetch(cls, OFFSET=0, BUFFERSIZE=0):
+    def fetch(cls,BUFFERSIZE=0, OFFSET=1):
         if BUFFERSIZE == 0:
             __SQL = cls.select(FIELD='*', TABLES=cls.table_name)
         else:
@@ -158,38 +185,39 @@ class MysqlDB(MysqlDBBase):
 
 
 class MysqlTable(dict,MysqlTableBase):
-    def __init__(self, *args,**kw):
-        if args:
-            print('args={}'.format(args))
+    #记录查询条件
+    def __init__(self,**kw):
         for key in kw:
             assert key in self.colnames(), "当前表中没有->{}<-列".format(key)
         dict.__init__(self, **kw)
-
-    def count(self):
-        __condition = 'where'
-        for key in self:
-            __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
-        __condition = __condition[:-4]
-        __SQL = self.select(FIELD='count(*)', TABLES=self.table_name, WHERE=__condition)
-        __NUM = self.fetchalldata(__SQL)
-        return __NUM[0][0]
-
-    def search(self, NUM=0):
-        __condition = 'where'
-        for key in self:
-            if self[key]=='':
-                pass
-            else:
-                __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
-        if len(__condition)<=6:
+    #符合条件的数据
+    def data(self, BUFFERSIZE=0, OFFSET=1):
+        if self =={}:
             return []
         else:
+            __condition = 'where'
+            for key in self:
+                __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
             __condition = __condition[:-4]
-            if NUM == 0:
-                __SQL = self.select(FIELD='*', TABLES=self.table_name, WHERE=__condition)
+            if BUFFERSIZE == 0:
+                __SQL = self.select(FIELD='*', TABLES=self.table_name,WHERE=__condition)
             else:
-                __SQL = self.select(FIELD='*', TABLES=self.table_name, WHERE=__condition, LIMIT='LIMIT {}'.format(NUM))
+                __SQL = self.select(FIELD='*', TABLES=self.table_name,WHERE=__condition,LIMIT='LIMIT {},{};'.format((OFFSET - 1) * BUFFERSIZE, BUFFERSIZE))
             return self.fetchalldata(__SQL)
+    #子查询
+    def fliter(self,obj):
+        pass
+    #insert 单列，批量
+    def add(self):
+        pass
+    #update 单列，批量
+    def change(self):
+        pass
+    #delete 单列，批量
+    def remove(self):
+        pass
+
+
 
     def save(self):
         __COLNAME='( '
@@ -227,7 +255,8 @@ if __name__ == '__main__':
 
 
     class Group10(MysqlTable, Groupdata1):
-        pass
+        def p(self):
+            print(self.__class__.__name__)
 
 
     class Crm(MysqlDB, DBserver):
@@ -236,16 +265,8 @@ if __name__ == '__main__':
         pass
     db = DBserver()
     l = Group10(**{'QunNum': 900002})
-    p=Product()
-    print(l.search())
-    i=1
-    l1=[1,2,3,4,5,6,7,8]
-    def ff():
-        i=0
-        while(i<len(l1)):
-            n=yield l1[i]
-            i=i+1
+    p1=Product()
+    print(l.data(2))
+    print(l.desc())
+    p2=Product(product_price=15000)
 
-    f=ff()
-    print(f.send(None))
-    print(f.__next__())
