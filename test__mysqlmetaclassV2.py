@@ -114,6 +114,13 @@ class MysqlTableBase(metaclass=MysqlTableMetaclass):
             res.append(__d)
         return res
 
+    @classmethod
+    def getslots(cls):
+        s = []
+        for d in cls.desc():
+            s.append(d['field'])
+        return s
+
     # 获取列名
     @classmethod
     def colnames(cls):
@@ -184,12 +191,19 @@ class MysqlDB(MysqlDBBase):
     pass
 
 
-class MysqlTable(dict,MysqlTableBase):
+class MysqlTable(list,MysqlTableBase):
     #记录查询条件
-    def __init__(self,**kw):
-        for key in kw:
-            assert key in self.colnames(), "当前表中没有->{}<-列".format(key)
-        dict.__init__(self, **kw)
+    def __init__(self, *args, **kw):
+        if args:
+            print(args)
+
+        else:
+            print(kw)
+            for key in kw:
+                assert key in self.colnames(), "当前表中没有->{}<-列".format(key)
+            l=[]
+            l.append(kw)
+            list.__init__(self,l)
     #符合条件的数据
     def data(self, BUFFERSIZE=0, OFFSET=1):
         if self =={}:
@@ -205,17 +219,48 @@ class MysqlTable(dict,MysqlTableBase):
                 __SQL = self.select(FIELD='*', TABLES=self.table_name,WHERE=__condition,LIMIT='LIMIT {},{};'.format((OFFSET - 1) * BUFFERSIZE, BUFFERSIZE))
             return self.fetchalldata(__SQL)
     #子查询
-    def fliter(self,obj):
+    def fliter(self, *args):
         pass
     #insert 单列，批量
-    def add(self):
-        pass
+    def add(self, *args):
+        if args==():
+            __COLNAME = '( '
+            __VALUES = '( '
+            for key in self:
+                if self[key] == '':
+                    pass
+                else:
+                    __COLNAME = __COLNAME + key + ','
+                    __VALUES = __VALUES + '\'' + str(self[key]) + '\'' + ','
+            __COLNAME = __COLNAME[:-1] + ')'
+            __VALUES = __VALUES[:-1] + ')'
+            __SQL = self.insert(TABLES=self.table_name, FIELD=__COLNAME, VALUES=__VALUES)
+            print(__SQL)
+            try:
+                self.changedata(__SQL)
+                return True
+            except Exception as e:
+                print(e)
+                return False
+        else:
+            print(args)
+            print(444)
     #update 单列，批量
-    def change(self):
+    def change(self, *args):
+        __SQL=self.update()
         pass
     #delete 单列，批量
-    def remove(self):
-        pass
+    def remove(self, *args):
+        if self =={}:
+            pass
+        else:
+            __condition = 'where'
+            for key in self:
+                __condition = __condition + ' {}=\'{}\' and'.format(key, self[key])
+            __condition = __condition[:-4]
+        __SQL=self.delete(TABLES=self.table_name,WHERE=__condition)
+        self.changedata(__SQL)
+
 
 
 
@@ -265,8 +310,6 @@ if __name__ == '__main__':
         pass
     db = DBserver()
     l = Group10(**{'QunNum': 900002})
-    p1=Product()
-    print(l.data(2))
-    print(l.desc())
-    p2=Product(product_price=15000)
+    print(l)
+
 
