@@ -19,7 +19,7 @@ def test():
 def test01(page):
 
     print(page)
-    p = Product.fetchall()
+    p = Product.fetch()
     print(p)
     b=buffer(*p)
     print(b)
@@ -235,7 +235,7 @@ def employeenow():
 
 @app.route('/employeesearch')
 def employeesearch():
-    res = Employee.fetchall()
+    res = Employee.fetch()
     res.insert(0, Employee.colnames())
     return render_template('employeemain.html', employeelist=res)
 
